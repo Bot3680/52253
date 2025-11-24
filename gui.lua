@@ -4913,6 +4913,35 @@ local MiscTab = Window:Page({Name = "Misc", Columns = 2, Subtabs = true})
 local VisualsTab = Window:Page({Name = "Visuals", Columns = 2, Subtabs = false})
 local PlayersTab = Window:Page({Name = "Players", Columns = 2, Subtabs = false})
 local SettingsTab = Window:Page({Name = "Settings", Columns = 2, Subtabs = false})
+local MovementTab = Window:Page({Name = "Movement", Columns = 2, Subtabs = false})
+
+local MovementSection = MovementTab:Section({
+    Name = "Fly Controls",
+    Side = 1
+})
+
+MovementSection:Toggle({
+    Name = "Fly",
+    Flag = "Fly Enabled",
+    Default = false,
+    Callback = function(state)
+        getgenv().FlyToggle = state
+    end
+})
+
+MovementSection:Slider({
+    Name = "Fly Speed",
+    Flag = "Fly Speed",
+    Min = 5,
+    Max = 200,
+    Default = 60,
+    Decimals = 1,
+    Suffix = "",
+    Callback = function(value)
+        getgenv().FlySpeed = value
+    end
+})
+
 
 local NewSubtab = MiscTab:SubPage({Icon = "79080568477801", Columns = 2})
 local NewSubtab2 = MiscTab:SubPage({Icon = "84929780240463", Columns = 2})
