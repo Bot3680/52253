@@ -5313,3 +5313,117 @@ Library:Notification(string.format("Loaded in %.4f seconds", os.clock() - Loadin
 --
 getgenv().Library = Library
 return Library
+
+getgenv().Library = Library
+return Library
+
+-----------------------------------------------------
+-- FLY SCRIPT 
+-----------------------------------------------------
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+local flying = false
+local speed = 60
+
+local moveDirection = Vector3.new()
+local vertical = 0
+
+local keyDown = {
+	W = false,
+	A = false,
+	S = false,
+	D = false,
+}
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local hrp = character:WaitForChild("HumanoidRootPart")
+
+local bodyGyro
+local bodyVelocity
+
+local function updateMoveDirection()
+	local x = 0
+	local z = 0
+
+	if keyDown.W then z -= 1 end
+	if keyDown.S then z += 1 end
+	if keyDown.A then x -= 1 end
+	if keyDown.D then x += 1 end
+
+	if x == 0 and z == 0 then
+		moveDirection = Vector3.new()
+	else
+		moveDirection = Vector3.new(x, 0, z).Unit
+	end
+end
+
+-- Toggle flight on X
+UserInputService.InputBegan:Connect(function(input, gp)
+	if gp then return end
+
+	if input.KeyCode == Enum.KeyCode.X then
+		flying = not flying
+
+		if flying then
+			bodyGyro = Instance.new("BodyGyro")
+			bodyGyro.P = 4000
+			bodyGyro.MaxTorque = Vector3.new(4000, 4000, 4000)
+			bodyGyro.CFrame = hrp.CFrame
+			bodyGyro.Parent = hrp
+
+			bodyVelocity = Instance.new("BodyVelocity")
+			bodyVelocity.MaxForce = Vector3.new(400000, 400000, 400000)
+			bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+			bodyVelocity.Parent = hrp
+		else
+			if bodyGyro then bodyGyro:Destroy() bodyGyro = nil end
+			if bodyVelocity then bodyVelocity:Destroy() bodyVelocity = nil end
+
+			vertical = 0
+			moveDirection = Vector3.new()
+
+			keyDown.W = false
+			keyDown.A = false
+			keyDown.S = false
+			keyDown.D = false
+		end
+	end
+end)
+
+-- Key down
+UserInputService.InputBegan:Connect(function(input, gp)
+	if gp then return end
+
+	if input.KeyCode == Enum.KeyCode.W then keyDown.W = true; updateMoveDirection() end
+	if input.KeyCode == Enum.KeyCode.S then keyDown.S = true; updateMoveDirection() end
+	if input.KeyCode == Enum.KeyCode.A then keyDown.A = true; updateMoveDirection() end
+	if input.KeyCode == Enum.KeyCode.D then keyDown.D = true; updateMoveDirection() end
+	if input.KeyCode == Enum.KeyCode.Space then vertical = 1 end
+end)
+
+-- Key up
+UserInputService.InputEnded:Connect(function(input, gp)
+	if gp then return end
+
+	if input.KeyCode == Enum.KeyCode.W then keyDown.W = false; updateMoveDirection() end
+	if input.KeyCode == Enum.KeyCode.S then keyDown.S = false; updateMoveDirection() end
+	if input.KeyCode == Enum.KeyCode.A then keyDown.A = false; updateMoveDirection() end
+	if input.KeyCode == Enum.KeyCode.D then keyDown.D = false; updateMoveDirection() end
+	if input.KeyCode == Enum.KeyCode.Space then vertical = 0 end
+end)
+
+-- Flight physics
+RunService.RenderStepped:Connect(function()
+	if flying and bodyVelocity and bodyGyro then
+		local cam = workspace.CurrentCamera
+
+		bodyGyro.CFrame = cam.CFrame
+
+		local airMove = cam.CFrame:VectorToWorldSpace(moveDirection) * speed
+		local upMove = Vector3.new(0, vertical * speed, 0)
+
+		bodyVelocity.Velocity = airMove + upMove
+	end
+end)
