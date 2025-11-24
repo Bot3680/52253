@@ -4970,6 +4970,21 @@ SpeedSection:Slider({
     end
 })
 
+local NoclipSection = MovementTab:Section({
+    Name = "Noclip Controls",
+    Side = 1
+})
+
+NoclipSection:Toggle({
+    Name = "Noclip",
+    Flag = "Noclip Enabled",
+    Default = false,
+    Callback = function(state)
+        getgenv().NoclipToggle = state
+    end
+})
+
+
 
 
 local NewSubtab = MiscTab:SubPage({Icon = "79080568477801", Columns = 2})
@@ -5252,7 +5267,7 @@ do -- Settings Tab
         Library.MenuKeybind = Library.Flags["Menu Keybind"].Key
     end})
 
-    SettingsSection:Toggle({Name = "Watermark", Flag = "Watermark", Default = false, Callback = function(Value)
+    SettingsSection:Toggle({Name = "Watermark", Flag = "Watermark", Default = false, Callback = function(Value) 
         Watermark:SetVisibility(Value)
     end})
 
@@ -5490,6 +5505,52 @@ task.spawn(function()
 		end
 	end
 end)
+
+-----------------------------------------------------
+-- N O C L I P   S C R I P T (N KEY + GUI INTEGRATED)
+-----------------------------------------------------
+
+getgenv().NoclipToggle = getgenv().NoclipToggle or false
+
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local noclipActive = false
+
+-- Refresh character on respawn
+player.CharacterAdded:Connect(function(char)
+    character = char
+    noclipActive = false
+end)
+
+-- Toggle Noclip with N key (ONLY if GUI toggle is ON)
+UserInputService.InputBegan:Connect(function(input, gp)
+    if gp then return end
+    if input.KeyCode == Enum.KeyCode.N then
+        
+        -- Respect the GUI toggle
+        if not getgenv().NoclipToggle then 
+            return 
+        end
+        
+        noclipActive = not noclipActive
+    end
+end)
+
+-- Actual noclip logic
+RunService.Stepped:Connect(function()
+    if noclipActive and character then
+        for _, part in pairs(character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+end)
+
 
 
 -----------------------------------------------------
