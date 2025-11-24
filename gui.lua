@@ -4897,7 +4897,7 @@ local Library do
 end
 --
 local Window = Library:Window({
-    Name = "you can change the name here",
+    Name = "toto ruless",
     --Size = UDim2.new(0, 600, 0, 400),
     FadeSpeed = 0.25
 })
@@ -4941,6 +4941,34 @@ MovementSection:Slider({
         getgenv().FlySpeed = value
     end
 })
+
+local SpeedSection = MovementTab:Section({
+    Name = "Speed Controls",
+    Side = 2
+})
+
+SpeedSection:Toggle({
+    Name = "Speed",
+    Flag = "Speed Enabled",
+    Default = false,
+    Callback = function(state)
+        getgenv().SpeedToggle = state
+    end
+})
+
+SpeedSection:Slider({
+    Name = "Speed Amount",
+    Flag = "Speed Amount",
+    Min = 1,
+    Max = 400,
+    Default = 16,
+    Decimals = 1,
+    Suffix = "",
+    Callback = function(value)
+        getgenv().SpeedValue = value
+    end
+})
+
 
 
 local NewSubtab = MiscTab:SubPage({Icon = "79080568477801", Columns = 2})
