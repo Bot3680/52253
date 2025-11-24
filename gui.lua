@@ -4912,8 +4912,9 @@ local CombatTab = Window:Page({Name = "Combat", Columns = 2, Subtabs = false})
 local MiscTab = Window:Page({Name = "Misc", Columns = 2, Subtabs = true})
 local VisualsTab = Window:Page({Name = "Visuals", Columns = 2, Subtabs = false})
 local PlayersTab = Window:Page({Name = "Players", Columns = 2, Subtabs = false})
-local SettingsTab = Window:Page({Name = "Settings", Columns = 2, Subtabs = false})
 local MovementTab = Window:Page({Name = "Movement", Columns = 2, Subtabs = false})
+local SettingsTab = Window:Page({Name = "Settings", Columns = 2, Subtabs = false})
+
 
 local MovementSection = MovementTab:Section({
     Name = "Fly Controls",
@@ -4944,7 +4945,7 @@ MovementSection:Slider({
 
 local SpeedSection = MovementTab:Section({
     Name = "Speed Controls",
-    Side = 2
+    Side = 1
 })
 
 SpeedSection:Toggle({
