@@ -5434,6 +5434,64 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
+
+
+-----------------------------------------------------
+-- SPEED SCRIPT 
+-----------------------------------------------------
+
+getgenv().SpeedToggle = getgenv().SpeedToggle or false
+getgenv().SpeedValue = getgenv().SpeedValue or 50
+
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+local normalSpeed = 16
+local speedOn = false
+
+-- refresh humanoid on respawn
+player.CharacterAdded:Connect(function(char)
+	character = char
+	humanoid = char:WaitForChild("Humanoid")
+	humanoid.WalkSpeed = normalSpeed
+	speedOn = false
+end)
+
+-- toggle speed on C, but only if GUI toggle is ON
+UserInputService.InputBegan:Connect(function(input, gp)
+	if gp then return end
+
+	if input.KeyCode == Enum.KeyCode.C then
+		
+		if not getgenv().SpeedToggle then
+			-- GUI toggle is OFF, do nothing
+			return
+		end
+
+		speedOn = not speedOn
+
+		if speedOn then
+			humanoid.WalkSpeed = getgenv().SpeedValue
+		else
+			humanoid.WalkSpeed = normalSpeed
+		end
+	end
+end)
+
+-- update speed if slider changes while active
+task.spawn(function()
+	while task.wait(0.1) do
+		if speedOn and humanoid then
+			humanoid.WalkSpeed = getgenv().SpeedValue
+		end
+	end
+end)
+
+
 -----------------------------------------------------
 -- FINAL RETURN (only one!)
 -----------------------------------------------------
