@@ -5314,9 +5314,6 @@ Library:Notification(string.format("Loaded in %.4f seconds", os.clock() - Loadin
 getgenv().Library = Library
 return Library
 
-getgenv().Library = Library
-return Library
-
 -----------------------------------------------------
 -- FLY SCRIPT 
 -----------------------------------------------------
