@@ -5248,7 +5248,7 @@ do -- Settings Tab
         end})
     end
 
-    SettingsSection:Label({Name = "Menu Keybind", Alignment = "Left"}):Keybind({Name = "Menu Keybind", Flag = "Menu Keybind", Default = Enum.KeyCode.RightControl, Mode = "Toggle", Callback = function(Value)
+    SettingsSection:Label({Name = "Menu Keybind", Alignment = "Left"}):Keybind({Name = "Menu Keybind", Flag = "Menu Keybind", Default = Enum.KeyCode.Insert, Mode = "Toggle", Callback = function(Value)
         Library.MenuKeybind = Library.Flags["Menu Keybind"].Key
     end})
 
